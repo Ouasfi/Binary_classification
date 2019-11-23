@@ -9,40 +9,60 @@ import pandas as pd
 import numpy as np
 from random import seed
 from sklearn.svm import SVC
-from sklearn.metrics import classification_report, confusion_matrix 
-from sklearn.model_selection import GridSearchCV 
-from sklearn.model_selection import train_test_split 
-from sklearn.model_selection import RandomizedSearchCV
+from sklearn.metrics import classification_report, confusion_matrix , accuracy_score, cohen_kappa_score
+from sklearn.model_selection import GridSearchCV , rain_test_split , RandomizedSearchCV
 import matplotlib.pyplot as plt
 from sklearn import model_selection
-
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.preprocessing import label_binarize
 
 
 
 # roc_auc_score, roc_curve
 from sklearn.metrics import roc_auc_score, roc_curve
 
+def load_data(filename, target_name, test_size = 0):  
 
+    """
+    load data from filename 
+
+    Parameters :
+    ___________
+
+    filename : string 
+        filename or path where data is stored.
+    target_name : string
+        name of the variable to be predicted. 
+    test_size : float
+        If float, should be between 0.0 and 1.0 and represent the proportion of the dataset 
+        to include in the test split. If int, represents the absolute number of test samples.
+        If None, it will be set to 0.25.
+
+    """ 
+    df = pd.read_csv(filename)
+    X = df.drop(target_name, axis=1).values
+    y = df[target_name].values
+    
+    if split !=0:
+        X_train, X_test, y_train, y_test = train_test_split( X,y, 
+                test_size = test_size, random_state = 101)
+        print("X_train :", np.shape(X_train), " y_train :", np.shape(y_train), "X_tesy : ", X_test, "y tesy : ",y_test )
+        return df, X, y, X_train, X_test, y_train, y_test
+
+    return df, X, y
 
 
 def plot_roc(y_test,y_pred,model):
-
     """
     plot roc curve
     """
-
     # AUC score
-
     auc_score = roc_auc_score(y_test, y_pred)
-
-        
-
+     
     # fpr, tpr, threshold
 
     fpr, tpr, thresholds = roc_curve(y_test, y_pred)
-
-        
-
+      
     # ROC curve plot
     plt.plot([0, 1], [0, 1], 'k--')
 
@@ -94,13 +114,6 @@ def search_pipeline(X_train_data, X_test_data, y_train_data,
             pred = fitted_model.predict(X_test_data)
             
         return fitted_model, pred
-
-def load_data():   
-    filename = r"C:\Users\faull\OneDrive\Documents\Scolaire\IMT\MCE\Machine learning\Projet\data_classification\data_banknote_authentication.txt"
-    df = pd.read_csv(filename, names=['Variance', 'Skewness', 'Curtosis', 'Entropy', 'Class'])
-    X = df.drop('Class', axis=1)
-    y = df['Class']  
-    return df, X, y
 
 
 df, X, y = load_data()
@@ -157,6 +170,37 @@ print(report)
 #  
 ## print classification report 
 #print(classification_report(y_test, grid_predictions)) 
+
+
+"""
+Models :
+______
+DecisionTree
+Multilayer perceptron
+"""
+
+def train_DecisionTreeModel(X_train, X_test, y_train, criterion):
+ 
+    # Creating the classifier object
+    clf = DecisionTreeClassifier(criterion = criterion,
+            random_state = 100,max_depth=3, min_samples_leaf=5)
+ 
+    # Performing training
+    clf.fit(X_train, y_train)
+    return clf
+
+
+# Function to calculate accuracy
+def accuracy(y_test, y_pred):
+     
+    print("Confusion Matrix: \n",
+    confusion_matrix(y_test,y_pred))
+     
+    print ("Accuracy : ",
+    accuracy_score(y_test,y_pred)*100)
+     
+    print("Report : \n",
+    classification_report(y_test, y_pred))
 
 
 
