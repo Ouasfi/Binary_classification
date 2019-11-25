@@ -67,6 +67,12 @@ def load_data(filepath, target_name, test_size = 0):
 def search_pipeline(X_train_data, X_test_data, y_train_data, 
                        model, param_grid, cv=10, scoring_fit='neg_mean_squared_error',
                        do_probabilities = False, search_mode = 'GridSearchCV', n_iterations = 0, is_keras_model = False):
+    """
+    Parameters tuning for sklearn and keras models. **is_keras_model** should be set to True if a keras model is used. 
+
+    """
+
+
     fitted_model = None
     
     if is_keras_model :

@@ -15,6 +15,7 @@ Models :
 ______
 DecisionTree
 Multilayer perceptron
+
 """
 def train_DecisionTreeModel(X_train, X_test, y_train, criterion = 'gini', max_depth = 3, min_samples_leaf = 5 ):
  
@@ -30,6 +31,25 @@ def train_DecisionTreeModel(X_train, X_test, y_train, criterion = 'gini', max_de
 
 def build_MLP( input_shape, activation = 'relu', units = [100,100], momentum=0.1, epsilon=1e-05, dropout_rate = 0, optimizer = 'Adam'):
     
+    """
+    build a neural network with blocks of linear blocks fellowed by non linear activations. Every blocks consists of
+     BatchNormalization, Dropout and a  dense layer. The depth of the network can be custumized in parameter "units"
+
+
+  	Parameters :
+  	____________
+
+  	input_shape : tuple of integers
+  		Correspond to the shape of the input samples.
+	units : list of integers
+		Define the number of units of every linear blocks of the network. Thus len(units) define the depth of the network. If "units" is an empty list 
+		the built model correspond to a logistic regression preceded by a BatchNormalization.
+
+	Return :
+
+	model : Keras Sequential object
+			Compiled model with a binary crossentropy loss and accuracy metric.
+    """
 
 
     model = Sequential()
