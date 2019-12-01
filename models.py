@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
-
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
 import keras
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, BatchNormalization, Flatten
@@ -114,6 +115,14 @@ def train_nn(model,X_train, y_train, X_test, y_test,  batch_size = 70, epochs = 
 	print('Test accuracy:', score[1])
 	return history
 
+def RandomForest(n_estimators = 10,max_depth = None, criterion ='gini',random_state = 42):
+    model = RandomForestClassifier(n_estimators = n_estimators,max_depth = max_depth, criterion =criterion,random_state = random_state)
+    return(model)
+    
+def SVM(C=1.0, kernel='rbf', degree=3, gamma='auto_deprecated'):
+    model = SVC(C=C, kernel=kernel, degree=degree, gamma=gamme)
+    return(model)
+    
 def predict(model, X_test):
 
 	return model.predict(X_test)
