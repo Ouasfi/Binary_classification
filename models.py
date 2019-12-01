@@ -120,7 +120,7 @@ def RandomForest(n_estimators = 10,max_depth = None, criterion ='gini',random_st
     return(model)
     
 def SVM(C=1.0, kernel='rbf', degree=3, gamma='auto_deprecated'):
-    model = SVC(C=C, kernel=kernel, degree=degree, gamma=gamme)
+    model = SVC(C=C, kernel=kernel, degree=degree, gamma=gamma)
     return(model)
     
 def predict(model, X_test):
