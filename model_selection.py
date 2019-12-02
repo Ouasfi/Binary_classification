@@ -122,7 +122,7 @@ def get_best_parameters (grid ):
 
     return grid.best_params_
 
-def plot_roc(y_test,y_pred,model):
+def plot_roc(y_test,y_pred):
     """
     plot roc curve
 
@@ -145,7 +145,7 @@ def plot_roc(y_test,y_pred,model):
     # ROC curve plot
     plt.plot([0, 1], [0, 1], 'k--')
 
-    plt.plot(fpr, tpr, label= model + ' Classifier (AUC = {: .2f})'.format(auc_score))
+    plt.plot(fpr, tpr)
 
     plt.xlabel('False Positive Rate')
 
@@ -195,7 +195,6 @@ def cross_validation(model, X,Y,epochs=100, batch_size=70, n_splits=10, is_keras
     results = cross_val_score(model, X, Y, cv=kfold)
     print('avg accuracy :', results.mean())
     return results
-
 
 
 

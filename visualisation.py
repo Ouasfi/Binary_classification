@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from sklearn.decomposition import PCA
 from preprocessing.preprocessing_ckd import Preprocessing
+from pandas.plotting import scatter_matrix, parallel_coordinates
 
 def scatter_plot_matrix(file, separator=","):
     """
@@ -14,7 +15,7 @@ def scatter_plot_matrix(file, separator=","):
     default is ","
     """
     df = pd.read_csv(file, sep= separator)
-    pd.scatter_matrix(df, alpha=0.2, figsize=(10, 10))
+    scatter_matrix(df, alpha=0.2, figsize=(10, 10))
     plt.show()
 
 def parallel_coordinates_plot(file, target, separator=","):
@@ -27,7 +28,7 @@ def parallel_coordinates_plot(file, target, separator=","):
     default is ","
     """
     df = pd.read_csv(file, sep= separator)
-    pd.tools.plotting.parallel_coordinates(df, target, color=('#556270', '#4ECDC4', '#C7F464'))
+    parallel_coordinates(df, target, color=('#556270', '#4ECDC4', '#C7F464'))
     plt.title("")
     plt.show()
 
@@ -52,3 +53,4 @@ def all_visualisation(file, target, separator=","):
     print("\n---- Plotting the kernel density estimation... ----")
     kde_plot(file)
     print("\n ----- Plots finished! -----")
+
