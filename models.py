@@ -1,7 +1,8 @@
 import pandas as pd
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
-
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.svm import SVC
 import keras
 from keras.models import Sequential
 from keras.layers import Dense, Dropout, BatchNormalization, Flatten
@@ -113,6 +114,25 @@ def train_nn(model,X_train, y_train, X_test, y_test,  batch_size = 70, epochs = 
 	score = model.evaluate(X_test, y_test, verbose=0)
 	print('Test accuracy:', score[1])
 	return history
+
+def RandomForest(n_estimators = 10,max_depth = None, criterion ='gini',**kwargs ):
+    model = RandomForestClassifier(n_estimators = n_estimators,random_state = 100,max_depth = max_depth, criterion =criterion)
+    if kwargs['train']:
+    	X_train = kwargs['X_train']
+    	y_train = kwargs['y_train']
+    	
+    	model.fit(X_train, y_train)
+    return(model)
+    
+def SVM(C=1.0, kernel='rbf', degree=3, gamma='auto_deprecated',**kwargs ):
+    model = SVC(C=C, kernel=kernel, degree=degree, gamma=gamma)
+    if kwargs['train']:
+    	X_train = kwargs['X_train']
+    	y_train = kwargs['y_train']
+    	
+    	model.fit(X_train, y_train)
+    return(model)
+    
 
 def predict(model, X_test):
 
