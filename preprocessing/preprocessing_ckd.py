@@ -1,30 +1,25 @@
-import pandas as pd
 import numpy as np
-from sklearn.preprocessing import Imputer
-class Preprocessing:
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 
-    def __init__(self, dataset):
-        self.dataset = pd.read_csv(dataset, na_values="?");
-        self.string_columns = {"Rbc":     {"normal": 1, "abnormal": 0},
-           "Pc": {"normal": 1, "abnormal": 0},
-           "Pcc": {"present": 1, "notpresent": 0},
-           "Ba": {"present": 1, "notpresent": 0},
-           "Htn": {"yes": 1, "no": 0},
-           "Dm": {"yes": 1, "no": 0},
-           "Cad": {"yes": 1, "no": 0},
-           "Appet": {"good": 1, "poor": 0},
-           "pe": {"yes": 1, "no": 0},
-           "Ane": {"yes": 1, "no": 0}}
 
-    def cleanup(self):
-        # Remplacement des valeurs nominales par les valeurs binaires
-        self.dataset.replace(self.string_columns, inplace=True)
+def Processing(path):
+    """
 
-        # Combler les valeurs nulles par la moyenne de la colonne en
-        # question
-        self.dataset.fillna(round(self.dataset.mean(),2), inplace=True)
+    Clean the data by replacing the na_values by the mean 
+    of the associated column. Take the path as argument.
+    """
+    data = pd.read_csv(path, na_values='?')
+    for i in data.columns:
+        for j in data[i]:
+            if(isinstance(j,str)):
+                l = [x for x in data[i].unique() if str(x) != 'nan']
+                le = LabelEncoder()
+                le.fit(l)
+                y = le.transform(l)
+                for k in range(len(l)):
+                    data[i].replace(l[k],y[k], inplace = True)
 
-    def save(self, nom):
-        # Sauvegarde du tableau traites
-        if (format == "csv"):
-            self.dataset.to_csv(nom+".csv", sep=',', index=False)
+    data.to_csv("../data/test.csv", sep=',', index=False)
+
+Processing("../data/ckd.csv")
