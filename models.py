@@ -35,7 +35,7 @@ def DecisionTreeModel(criterion = 'gini', max_depth = 3, min_samples_leaf = 5,**
 def build_MLP( input_shape, activation = 'relu', units = [100,100], momentum=0.1, epsilon=1e-05, dropout_rate = 0, optimizer = 'Adam'):
     
     """
-    build a neural network with blocks of linear blocks fellowed by non linear activations. Every blocks consists of
+    build a neural network with linear blocks fellowed by non linear activations. Every block consists of
      BatchNormalization, Dropout and a  dense layer. The depth of the network can be custumized in parameter "units"
 
 

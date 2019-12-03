@@ -26,7 +26,7 @@ from keras.models import Sequential
 # roc_auc_score, roc_curve
 from sklearn.metrics import roc_auc_score, roc_curve
 
-def load_data(filepath, target_name, test_size = 0):  
+def load_data(filepath, target_name = None, test_size = 0):  
 
     """
     load data from filepath 
@@ -55,8 +55,13 @@ def load_data(filepath, target_name, test_size = 0):
 
     """ 
     df = pd.read_csv(filepath)
-    X = df.drop(target_name, axis=1).values
-    y = df[target_name].values
+    if target_name is None:
+        X = df.drop(df.columns[-1],axis=1)
+        y = df[df.columns[-1]]
+
+    else :
+        X = df.drop(target_name, axis=1).values
+        y = df[target_name].values
     
     if test_size !=0:
         X_train, X_test, y_train, y_test = train_test_split( X,y, 
@@ -81,7 +86,8 @@ def search_pipeline(X_train_data, X_test_data, y_train_data,
     fitted_model = None
     is_keras_model = type(model) == keras.engine.sequential.Sequential
     if is_keras_model :
-        model = KerasClassifier(build_fn=  lambda : model, verbose=0)
+        keras_model = model # sinon, il y a une erreur bizarre qui apparait 
+        model = KerasClassifier(build_fn=  lambda : keras_model, verbose=0)
     if(search_mode == 'GridSearchCV'):
         gs = GridSearchCV(
             estimator=model,
@@ -180,16 +186,18 @@ def accuracy(y_test, y_pred):
     classification_report(y_test, y_pred))
 
 
-def cross_validation(model, X,Y,epochs=100, batch_size=70, n_splits=10, is_keras_model= False, **kwargs):
+def cross_validation(model, X,Y,epochs=100, batch_size=70, n_splits=10, **kwargs):
 
     # fix random seed for reproducibility
     seed = 7
     np.random.seed(seed)
     is_keras_model = type(model) == keras.engine.sequential.Sequential
-
+    
 
     if is_keras_model:
-        model = KerasClassifier(build_fn=lambda :model, epochs=epochs, batch_size=batch_size, verbose=0)
+        print('Using Keras classifier')
+        keras_model = model
+        model = KerasClassifier(build_fn=lambda :keras_model, epochs=epochs, batch_size=batch_size, verbose=0)
     # evaluate using 1k-fold cross validation
     kfold = StratifiedKFold(n_splits=n_splits,  random_state=seed)
     results = cross_val_score(model, X, Y, cv=kfold)
