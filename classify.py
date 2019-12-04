@@ -45,8 +45,22 @@ param_grid_Dt = {'criterion': ['gini', 'entropy'],
               'max_depth' : range(3,14),
               'min_samples_leaf': range(3,4) } 
 
+param_grid_linear_SVM = {'C': [0.1, 1, 10, 100, 1000, 2000],  
+              'kernel': ['linear']}
+
+param_grid_rbf_SVM = {'C': [0.1, 1, 10, 100, 1000, 2000],  
+              'gamma': [1, 0.1, 0.01,0.05, 0.001, 0.0001],
+              'kernel': ['rbf']}  
+
+param_grid_random_forest = {'n_estimators':[7,8,9,10,11,12,13,14,15,16],'max_depth':[2,3,4,5,6,None],
+                     'random_state':[42]}
+
 models = {'MLP': {'build_fn': m.build_MLP((24,)),'params': param_grid_MLP},
-          'Decision_tree' : { 'build_fn':m.DecisionTreeModel( train = False),'params': param_grid_Dt}         
+          'Decision_tree' : { 'build_fn':m.DecisionTreeModel( train = False),'params': param_grid_Dt} ,
+          'Random_forest':{'buildfn':m.RandomForest(train=False),'params':param_grid_random_forest},
+          'linear_svm':{'buildfn':m.SVM(train=False),'params':param_grid_linear_svm},
+          'rbf_svm':{'buildfn':m.SVM(train=False),'params':param_grid_}rbf_svm}
+          
          }
 
 if finetune :
