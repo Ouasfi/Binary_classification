@@ -3,11 +3,13 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 
 
-def Processing(path):
+def Processing(path, name):
     """
 
-    Clean the data by replacing the na_values by the mean 
-    of the associated column. Take the path as argument.
+    Clean the data by replacing the na_values by the mean
+    of the associated column. Take the path and the
+    name of the saved file as arguments.
+
     """
     data = pd.read_csv(path, na_values='?')
     for i in data.columns:
@@ -20,6 +22,7 @@ def Processing(path):
                 for k in range(len(l)):
                     data[i].replace(l[k],y[k], inplace = True)
 
-    data.to_csv("../data/test.csv", sep=',', index=False)
+    data.fillna(round(data.mean(), 2), inplace=True)
+    data.to_csv("../data/"+name+".csv", sep=',', index=False)
 
-Processing("../data/ckd.csv")
+Processing("../data/ckd.csv", "processed")
