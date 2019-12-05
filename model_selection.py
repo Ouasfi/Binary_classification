@@ -95,7 +95,7 @@ def search_pipeline(X_train_data, X_test_data, y_train_data,
             cv=cv, 
             n_jobs=-1, 
             scoring=scoring_fit,
-            verbose=2
+            verbose=0
         )
         fitted_model = gs.fit(X_train_data, y_train_data)
 
@@ -107,7 +107,7 @@ def search_pipeline(X_train_data, X_test_data, y_train_data,
             n_iter=n_iterations,
             n_jobs=-1, 
             scoring=scoring_fit,
-            verbose=2
+            verbose=0
         )
         fitted_model = gs.fit(X_train_data, y_train_data)
     

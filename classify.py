@@ -9,11 +9,13 @@ parser = argparse.ArgumentParser('Parameter tuning for classification on a defin
 parser.add_argument('--path', type=str, default='none')
 parser.add_argument('--target_name', type=str, default='Class')
 parser.add_argument('--test_size', type=float, default=0.3)
-parser.add_argument('--train', type=bool, default='true')
+parser.add_argument('--train', type=bool, default=False)
 parser.add_argument('--batch_size', type=int, default=70)
 parser.add_argument('--epochs', type=int, default=15)
 parser.add_argument('--model_name', type=str, default='MLP')
-parser.add_argument('--finetune', type=bool, default='False')
+parser.add_argument('--finetune', type=bool, default=False)
+parser.add_argument('--n_sp', type=int, default=5)
+
 
 
 args = parser.parse_args()
@@ -28,8 +30,7 @@ model_name = args.model_name
 finetune = args.finetune
 
 df, X, y, X_train, X_test, y_train, y_test = load_data(path, target_name, test_size)
-y_train = label_binarize(y_train, classes = ['ckd', 'notckd'])
-y_test = label_binarize(y_test, classes = ['ckd', 'notckd'])
+
 
 
 param_grid_MLP = {
@@ -45,21 +46,19 @@ param_grid_Dt = {'criterion': ['gini', 'entropy'],
               'max_depth' : range(3,14),
               'min_samples_leaf': range(3,4) } 
 
-param_grid_linear_SVM = {'C': [0.1, 1, 10, 100, 1000, 2000],  
-              'kernel': ['linear']}
 
-param_grid_rbf_SVM = {'C': [0.1, 1, 10, 100, 1000, 2000],  
+
+param_grid_svm = {'C': [0.1, 1, 10, 100, 1000, 2000],  
               'gamma': [1, 0.1, 0.01,0.05, 0.001, 0.0001],
-              'kernel': ['rbf']}  
+              'kernel': ['rbf', 'linear']}  
 
 param_grid_random_forest = {'n_estimators':[7,8,9,10,11,12,13,14,15,16],'max_depth':[2,3,4,5,6,None],
                      'random_state':[42]}
 
 models = {'MLP': {'build_fn': m.build_MLP((24,)),'params': param_grid_MLP},
           'Decision_tree' : { 'build_fn':m.DecisionTreeModel( train = False),'params': param_grid_Dt} ,
-          'Random_forest':{'buildfn':m.RandomForest(train=False),'params':param_grid_random_forest},
-          'linear_svm':{'buildfn':m.SVM(train=False),'params':param_grid_linear_svm},
-          'rbf_svm':{'buildfn':m.SVM(train=False),'params':param_grid_}rbf_svm}
+          'Random_forest':{'build_fn':m.RandomForest(train=False),'params':param_grid_random_forest},
+          'svm':{'build_fn':m.SVM(train=False),'params':param_grid_svm}
           
          }
 
@@ -71,8 +70,16 @@ if finetune :
     best_parameters = get_best_parameters(gs )
     y_pred = m.predict(fitted_model, X_test)
     accuracy(y_test, y_pred>0.5)
-    results = cross_validation( model, X,y, n_splits=10,  **best_parameters)
+    #results = cross_validation( model, X,y, n_splits=n_sp,  **best_parameters)
+if train :
+        model = models[model_name]['build_fn']
+        history = m.train(model,X_train, y_train, X_test, y_test, batch_size = batch_size, epochs = epochs)
+        y_pred = m.predict(history, X_test)
+        accuracy(y_test, y_pred>0.5)
+        results = cross_validation( model, X,y, n_splits=n_sp)
+        
 
+    
              
              
 
