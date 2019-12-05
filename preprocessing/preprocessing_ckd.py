@@ -1,7 +1,22 @@
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
+import argparse
+from visualisation import all_visualisation
 
+
+
+parser = argparse.ArgumentParser('Parameter for cleaning dataset')
+parser.add_argument('--path', type=str, default='none')
+parser.add_argument('--target_name', type=str, default='Class')
+parser.add_argument('--name', type=str, default='Class')
+
+
+args = parser.parse_args()
+
+path = args.path
+target_name = args.target_name
+name = args.name
 
 def Processing(path, name):
     """
@@ -23,6 +38,7 @@ def Processing(path, name):
                     data[i].replace(l[k],y[k], inplace = True)
 
     data.fillna(round(data.mean(), 2), inplace=True)
-    data.to_csv("../data/"+name+".csv", sep=',', index=False)
+    data.to_csv("./data/"+name+".csv", sep=',', index=False)
 
-Processing("../data/ckd.csv", "processed")
+Processing(path,name)
+all_visualisation("./data/"+name+".csv",target_name)
