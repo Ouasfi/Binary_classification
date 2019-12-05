@@ -13,6 +13,8 @@ def scatter_plot_matrix(file, separator=","):
     Take as input a .csv file
     You can choose the separator,
     default is ","
+
+    Author : Eric N'GUESSAN
     """
     df = pd.read_csv(file, sep= separator)
     scatter_matrix(df, alpha=0.2, figsize=(10, 10))
@@ -26,6 +28,8 @@ def parallel_coordinates_plot(file, target, separator=","):
     name of the class columns
     You can choose the separator,
     default is ","
+
+    Authors : Eric N'GUESSAN
     """
     df = pd.read_csv(file, sep= separator)
     parallel_coordinates(df, target, color=('#556270', '#4ECDC4', '#C7F464'))
@@ -38,11 +42,15 @@ def kde_plot(file, separator=","):
     Take as input a .csv file
     You can choose the separator,
     default is ","
+
+    Authors : Eric N'GUESSAN
     """
     df = pd.read_csv(file, sep= separator)
 
 def all_visualisation(file, target, separator=","):
     """
+
+    Authors : Eric N'GUESSAN
     """
     print("---- Plotting the scatter plot matrix... ----")
     scatter_plot_matrix(file)
@@ -53,4 +61,3 @@ def all_visualisation(file, target, separator=","):
     print("\n---- Plotting the kernel density estimation... ----")
     kde_plot(file)
     print("\n ----- Plots finished! -----")
-
