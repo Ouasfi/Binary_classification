@@ -7,21 +7,26 @@ Ceci est un script temporaire.
 
 import pandas as pd
 import numpy as np
+import keras
 from random import seed
 from sklearn.svm import SVC
-from sklearn.metrics import classification_report, confusion_matrix , accuracy_score, cohen_kappa_score
-from sklearn.model_selection import GridSearchCV , rain_test_split , RandomizedSearchCV, tratifiedKFold
+from sklearn.metrics import classification_report, confusion_matrix , accuracy_score, cohen_kappa_score, log_loss
+from sklearn.model_selection import GridSearchCV , train_test_split , RandomizedSearchCV, StratifiedKFold
 import matplotlib.pyplot as plt
 from sklearn import model_selection
 from sklearn.preprocessing import label_binarize
 from sklearn.model_selection import cross_val_score
+from keras.wrappers.scikit_learn import KerasClassifier
+from keras.models import Sequential
+
+
 
 
 
 # roc_auc_score, roc_curve
 from sklearn.metrics import roc_auc_score, roc_curve
 
-def load_data(filepath, target_name, test_size = 0):  
+def load_data(filepath, target_name = None, test_size = 0):  
 
     """
     load data from filepath 
@@ -50,13 +55,18 @@ def load_data(filepath, target_name, test_size = 0):
 
     """ 
     df = pd.read_csv(filepath)
-    X = df.drop(target_name, axis=1).values
-    y = df[target_name].values
+    if target_name is None:
+        X = df.drop(df.columns[-1],axis=1)
+        y = df[df.columns[-1]]
+
+    else :
+        X = df.drop(target_name, axis=1).values
+        y = df[target_name].values
     
-    if split !=0:
+    if test_size !=0:
         X_train, X_test, y_train, y_test = train_test_split( X,y, 
                 test_size = test_size, random_state = 101)
-        print("X_train :", np.shape(X_train), " y_train :", np.shape(y_train), "X_tesy : ", X_test, "y tesy : ",y_test )
+        print("X_train :", X_train.shape, " y_train :", y_train.shape, "X_test : ", X_test.shape, "y test : ",y_test.shape )
         return df, X, y, X_train, X_test, y_train, y_test
 
     return df, X, y
@@ -66,11 +76,18 @@ def load_data(filepath, target_name, test_size = 0):
 
 def search_pipeline(X_train_data, X_test_data, y_train_data, 
                        model, param_grid, cv=10, scoring_fit='neg_mean_squared_error',
-                       do_probabilities = False, search_mode = 'GridSearchCV', n_iterations = 0, is_keras_model = False):
+                       do_probabilities = False, search_mode = 'GridSearchCV', n_iterations = 0):
+    """
+    Parameters tuning for sklearn and keras models. **is_keras_model** should be set to True if a keras model is used. 
+
+    """
+
+
     fitted_model = None
-    
+    is_keras_model = type(model) == keras.engine.sequential.Sequential
     if is_keras_model :
-        model = KerasClassifier(build_fn=model, verbose=0)
+        keras_model = model # sinon, il y a une erreur bizarre qui apparait 
+        model = KerasClassifier(build_fn=  lambda : keras_model, verbose=0)
     if(search_mode == 'GridSearchCV'):
         gs = GridSearchCV(
             estimator=model,
@@ -83,7 +100,7 @@ def search_pipeline(X_train_data, X_test_data, y_train_data,
         fitted_model = gs.fit(X_train_data, y_train_data)
 
     elif (search_mode == 'RandomizedSearchCV'):
-        rs = RandomizedSearchCV(
+        gs = RandomizedSearchCV(
             estimator=model,
             param_distributions=param_grid, 
             cv=cv,
@@ -92,7 +109,7 @@ def search_pipeline(X_train_data, X_test_data, y_train_data,
             scoring=scoring_fit,
             verbose=2
         )
-        fitted_model = rs.fit(X_train_data, y_train_data)
+        fitted_model = gs.fit(X_train_data, y_train_data)
     
     
     if(fitted_model != None):
@@ -101,7 +118,7 @@ def search_pipeline(X_train_data, X_test_data, y_train_data,
         else:
             pred = fitted_model.predict(X_test_data)
             
-        return fitted_model, pred
+        return gs, fitted_model, pred
 
 def get_best_parameters (grid ):
     print("les meilleurs paramètres sont " ,grid.best_params_) 
@@ -111,7 +128,7 @@ def get_best_parameters (grid ):
 
     return grid.best_params_
 
-def plot_roc(y_test,y_pred,model):
+def plot_roc(y_test,y_pred):
     """
     plot roc curve
 
@@ -134,7 +151,7 @@ def plot_roc(y_test,y_pred,model):
     # ROC curve plot
     plt.plot([0, 1], [0, 1], 'k--')
 
-    plt.plot(fpr, tpr, label= model + ' Classifier (AUC = {: .2f})'.format(auc_score))
+    plt.plot(fpr, tpr)
 
     plt.xlabel('False Positive Rate')
 
@@ -169,17 +186,22 @@ def accuracy(y_test, y_pred):
     classification_report(y_test, y_pred))
 
 
-def cross_validation(model, X,Y,epochs=100, batch_size=70, n_splits=10):
+def cross_validation(model, X,Y,epochs=100, batch_size=70, n_splits=10, **kwargs):
 
     # fix random seed for reproducibility
     seed = 7
-    numpy.random.seed(seed)
+    np.random.seed(seed)
+    is_keras_model = type(model) == keras.engine.sequential.Sequential
+    
+
     if is_keras_model:
-        model = KerasClassifier(build_fn=model, epochs=epochs, batch_size=batch_size, verbose=0)
+        print('Using Keras classifier')
+        keras_model = model
+        model = KerasClassifier(build_fn=lambda :keras_model, epochs=epochs, batch_size=batch_size, verbose=0)
     # evaluate using 1k-fold cross validation
     kfold = StratifiedKFold(n_splits=n_splits,  random_state=seed)
     results = cross_val_score(model, X, Y, cv=kfold)
-    print(results.mean())
+    print('avg accuracy :', results.mean())
     return results
 
 
@@ -202,61 +224,6 @@ def cross_validation(model, X,Y,epochs=100, batch_size=70, n_splits=10):
 
 
 
-
-df, X, y = load_data()
-print(df.head(8))
-
-  
-X_train, X_test, y_train, y_test = train_test_split( X,y, 
-                test_size = 0.50, random_state = 101) 
-#kfold = model_selection.KFold(n_splits=10, random_state=seed)
-y_train = y_train[:,np.newaxis]
-y_test = y_test[:,np.newaxis]
-print("X_train :", np.shape(X_train), " y_train :", np.shape(y_train), "X_tesy : ", X_test, "y tesy : ",y_test )
-model = SVC() 
-#model.fit(X_train,y_train)
-#pred = model.predict(X_test)
-#print("pred : " , pred)
-#model.fit(X_train, y_train) 
-#  
-## print prediction results 
-#predictions = model.predict(X_test) 
-#print(classification_report(y_test, predictions)) 
-
-
-  
-# defining parameter range 
-param_grid = {'C': [0.1, 1, 10, 100, 1000, 2000],  
-              'gamma': [1, 0.1, 0.01,0.05,0.005, 0.001, 0.0001],
-              #'degree' : [1,3],
-              'kernel': ['rbf']}  
-  
-#grid = GridSearchCV(SVC(), param_grid, refit = True, verbose = 3) 
-#  
-## fitting the model for grid search 
-#grid.fit(X_train, y_train) 
-model, pred = search_pipeline(X_train, X_test, y_train, model, 
-                                 param_grid, cv=5, scoring_fit='accuracy',
-                                 search_mode = 'RandomizedSearchCV', n_iterations = 15)
-
-# print best parameter after tuning 
-print("les meilleurs paramètres sont " ,model.best_params_) 
-  
-# print how our model looks after hyper-parameter tuning 
-print("les meilleur score est " ,model.best_score_) 
-print(len(y_test), " et ",len(pred))
-plot_roc(y_test,pred,model)
-report = classification_report(y_test, pred)
-print(report)
-
-#results = model_selection.cross_val_score(model, X, y, scoring='accuracy')
-
-#print("Accuracy: ",results.mean(), results.std())
-
-#grid_predictions = grid.predict(X_test) 
-#  
-## print classification report 
-#print(classification_report(y_test, grid_predictions)) 
 
 
     
