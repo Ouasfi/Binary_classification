@@ -102,18 +102,23 @@ def build_CNN(input_shape, filters= [3], kernels = [4], activation = 'relu', opt
 
 	return model 
 
-def train_nn(model,X_train, y_train, X_test, y_test,  batch_size = 70, epochs = 20):
-	
-	history = model.fit(X_train, y_train,
+def train(model,X_train, y_train, X_test, y_test,  batch_size = 70, epochs = 20):
+    
+    is_keras_model = type(model) == keras.engine.sequential.Sequential
+    if is_keras_model :
+        
+        history = model.fit(X_train, y_train,
                                  batch_size=batch_size,
                                  epochs=epochs,
-                                 verbose=1,
+                                 verbose=0,
                                  validation_data=(X_test, y_test),
                                  )
-
-	score = model.evaluate(X_test, y_test, verbose=0)
-	print('Test accuracy:', score[1])
-	return history
+        score = model.evaluate(X_test, y_test, verbose=0)
+        print('Test accuracy:', score[1])
+        
+    else:
+        history = model.fit(X_train, y_train)
+    return history
 
 def RandomForest(n_estimators = 10,max_depth = None, criterion ='gini',**kwargs ):
     model = RandomForestClassifier(n_estimators = n_estimators,random_state = 100,max_depth = max_depth, criterion =criterion)
