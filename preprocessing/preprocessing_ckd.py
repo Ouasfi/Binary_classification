@@ -25,6 +25,7 @@ def Processing(path, name):
     of the associated column. Take the path and the
     name of the saved file as arguments.
 
+    Authors : Eric N'GUESSAN & Nicolas STUCKI
     """
     data = pd.read_csv(path, na_values='?')
     for i in data.columns:
