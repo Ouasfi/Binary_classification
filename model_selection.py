@@ -79,6 +79,7 @@ def search_pipeline(X_train_data, X_test_data, y_train_data,
                        do_probabilities = False, search_mode = 'GridSearchCV', n_iterations = 0):
     """
     Parameters tuning for sklearn and keras models. **is_keras_model** should be set to True if a keras model is used. 
+    Made by Louis and Amine
 
     """
 
@@ -121,6 +122,10 @@ def search_pipeline(X_train_data, X_test_data, y_train_data,
         return gs, fitted_model, pred
 
 def get_best_parameters (grid ):
+    """
+    Made by Louis and Amine
+    
+    """
     print("les meilleurs paramètres sont " ,grid.best_params_) 
   
 # print how our model looks after hyper-parameter tuning 
@@ -140,6 +145,8 @@ def plot_roc(y_test,y_pred):
             target data used for testing the model performance
     y_pred : np array with the same same of y_test 
             predicted output of used "model"
+            
+    Made by Louis and Amine
     """
     # AUC score
     auc_score = roc_auc_score(y_test, y_pred)
@@ -173,6 +180,8 @@ def accuracy(y_test, y_pred):
             target data used for testing the model performance
     y_pred : np array with the same same of y_test 
             predicted output of used "model"
+    
+    Made by Louis and Amine
 
     """
      
