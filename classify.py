@@ -1,3 +1,6 @@
+"""
+Authors : Amine And Louis
+"""
 import numpy as np 
 import pandas as pd
 import models as m

@@ -52,7 +52,9 @@ def load_data(filepath, target_name = None, test_size = 0):
         target array extracted from loaded data
      X_train, X_test, y_train, y_test : np arrays
        train-test split of inputs.  
+    
 
+    Author : Amine and Louis.
     """ 
     df = pd.read_csv(filepath)
     if target_name is None:
@@ -78,7 +80,7 @@ def search_pipeline(X_train_data, X_test_data, y_train_data,
                        model, param_grid, cv=10, scoring_fit='neg_mean_squared_error',
                        do_probabilities = False, search_mode = 'GridSearchCV', n_iterations = 0):
     """
-    Parameters tuning for sklearn and keras models. **is_keras_model** should be set to True if a keras model is used. 
+    Parameters tuning for sklearn and keras models. . 
     Made by Louis and Amine
 
     """
@@ -146,7 +148,7 @@ def plot_roc(y_test,y_pred):
     y_pred : np array with the same same of y_test 
             predicted output of used "model"
             
-    Made by Louis and Amine
+    Made by Louis.
     """
     # AUC score
     auc_score = roc_auc_score(y_test, y_pred)
@@ -198,6 +200,23 @@ def accuracy(y_test, y_pred):
 def cross_validation(model, X,Y,epochs=100, batch_size=70, n_splits=10, **kwargs):
 
     # fix random seed for reproducibility
+
+    """
+    take a keras or sklearn model and perform cross validation.
+
+    Parameteres:
+    ___________
+    model : keras.engine.sequential.Sequential or sklearn model
+        the model upon which the cross validation is performes.
+    X, y : np array
+        correspond respectively to input and output data. 
+
+
+
+    Author : Amine
+
+
+    """
     seed = 7
     np.random.seed(seed)
     is_keras_model = type(model) == keras.engine.sequential.Sequential
