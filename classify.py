@@ -28,6 +28,7 @@ epochs = args.epochs
 batch_size = args.batch_size
 model_name = args.model_name
 finetune = args.finetune
+n_sp = args.n_sp
 
 df, X, y, X_train, X_test, y_train, y_test = load_data(path, target_name, test_size)
 
@@ -61,8 +62,9 @@ models = {'MLP': {'build_fn': m.build_MLP((24,)),'params': param_grid_MLP},
           'svm':{'build_fn':m.SVM(train=False),'params':param_grid_svm}
           
          }
-
+# to fined the best parameters of a given models. A parameters grid should be provided.
 if finetune :
+    print("Finetuning ...")
     
     model = models[model_name]['build_fn']
     param_grid = models[model_name]['params']
@@ -72,11 +74,14 @@ if finetune :
     accuracy(y_test, y_pred>0.5)
     #results = cross_validation( model, X,y, n_splits=n_sp,  **best_parameters)
 if train :
+        print("Training ...")
         model = models[model_name]['build_fn']
         history = m.train(model,X_train, y_train, X_test, y_test, batch_size = batch_size, epochs = epochs)
+        print("Cross validation ...")
+        results = cross_validation( model, X_train,y_train, n_splits=n_sp)
         y_pred = m.predict(history, X_test)
         accuracy(y_test, y_pred>0.5)
-        results = cross_validation( model, X,y, n_splits=n_sp)
+        
         
 
     
