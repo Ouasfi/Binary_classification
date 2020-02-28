@@ -65,7 +65,7 @@ models = {'MLP': {'build_fn': m.build_MLP((24,)),'params': param_grid_MLP},
           'svm':{'build_fn':m.SVM(train=False),'params':param_grid_svm}
           
          }
-# to fined the best parameters of a given models. A parameters grid should be provided.
+# to find the best parameters of a given model. A parameters grid should be provided.
 if finetune :
     print("Finetuning ...")
     
