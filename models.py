@@ -199,7 +199,7 @@ def RandomForest(n_estimators = 10,max_depth = None, criterion ='gini',**kwargs 
     	model.fit(X_train, y_train)
     return(model)
     
-def SVM(C=1.0, kernel='rbf', degree=3, gamma='auto_deprecated',**kwargs ):
+def SVM(C=1.0, kernel='rbf', degree=3, gamma='auto',**kwargs ):
     """
     Define a function which implements the support vector machines classifier.
     We can either train this model or not depending if we will search to optimize the hyperparameters

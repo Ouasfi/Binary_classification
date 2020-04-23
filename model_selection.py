@@ -67,7 +67,7 @@ def load_data(filepath, target_name = None, test_size = 0):
     
     if test_size !=0:
         X_train, X_test, y_train, y_test = train_test_split( X,y, 
-                test_size = test_size, random_state = 101)
+                test_size = test_size, random_state = 101, shuffle=True)
         print("X_train :", X_train.shape, " y_train :", y_train.shape, "X_test : ", X_test.shape, "y test : ",y_test.shape )
         return df, X, y, X_train, X_test, y_train, y_test
 
@@ -212,7 +212,9 @@ def cross_validation(model, X,Y,epochs=100, batch_size=70, n_splits=10, **kwargs
         correspond respectively to input and output data. 
 
 
-
+    returns:
+    -------
+    results : cross validation scores
     Author : Amine
 
 
