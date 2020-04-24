@@ -30,17 +30,19 @@ A library for binary classification based on sklearn and keras.
 
 ## Datasets:
 The methods implemented here have been tested on the following datasets:
-	- **Banknote authantification dataset** : Dataset about distinguishing genuine and forged banknotes. Data were extracted from images that were taken from genuine and forged banknote-like specimens. A Wavelet Transform tool was used to extract features from these images.
 
-Attribute Information
-V1. variance of Wavelet Transformed image (continuous)
-V2. skewness of Wavelet Transformed image (continuous)
-V3. curtosis of Wavelet Transformed image (continuous)
-V4. entropy of image (continuous)
+- **Banknote authantification dataset** : Dataset about distinguishing genuine and forged banknotes. Data were extracted from images that were taken from genuine and forged banknote-like specimens. A Wavelet Transform tool was used to extract features from these images.
 
-Class (target). Presumably 1 for genuine and 2 for forged
+	Attribute Information
+	V1. variance of Wavelet Transformed image (continuous)
+	V2. skewness of Wavelet Transformed image (continuous)
+	V3. curtosis of Wavelet Transformed image (continuous)
+	V4. entropy of image (continuous)
 
-	- ** Chronic Kidney desease dataset** :  Data used in this experiment can be found here :  https://archive.ics.uci.edu/ml/datasets/chronic_kidney_disease . 
+	Class (target). Presumably 1 for genuine and 2 for forged
+
+
+- **Chronic Kidney desease dataset** :  Data used in this experiment can be found here :  https://archive.ics.uci.edu/ml/datasets/chronic_kidney_disease . 
 
 
 
